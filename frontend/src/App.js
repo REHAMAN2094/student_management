@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
@@ -13,7 +13,7 @@ function App() {
 
   const fetchStudents = async (page = 1) => {
     try {
-      const response = await axios.get(`https://student-management-tnxl.onrender.com/students?page=${page}&limit=5`, {
+      const response = await axios.get(`http://localhost:5000/students?page=${page}&limit=5`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setStudents(response.data.students);
@@ -24,19 +24,7 @@ function App() {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setAuthToken(null);
-  };
-  
-  const ProtectedRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        authToken ? <Component {...props} /> : <Navigate to="/login" />
-      }
-    />
-  );
+  const ProtectedRoute = ({ children }) => (authToken ? children : <Navigate to="/login" replace />);
 
   useEffect(() => {
     if (authToken) {
@@ -48,32 +36,40 @@ function App() {
     <Router>
       <div>
         <h1>Student Management System</h1>
-        <Switch>
-          <Route path="/login">
-            <Login setAuthToken={setAuthToken} />
-          </Route>
+        <Routes>
+          <Route path="/login" element={<Login setAuthToken={setAuthToken} />} />
 
-          <ProtectedRoute
+          <Route
             path="/students"
-            component={() => (
-              <div>
-                <AddStudent />
-                <h2>Student List</h2>
-                <ul>
-                  {students.map((student) => (
-                    <li key={student._id}>
-                      {student.name} - {student.age} - {student.course}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            element={(
+              <ProtectedRoute>
+                <div>
+                  <AddStudent />
+                  <h2>Student List</h2>
+                  <ul>
+                    {students.map((student) => (
+                      <li key={student.id || student._id}>
+                        {student.name} - {student.age} - {student.course}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ProtectedRoute>
             )}
           />
 
-          <ProtectedRoute path="/edit/:id" component={EditStudent} />
+          <Route
+            path="/edit/:id"
+            element={(
+              <ProtectedRoute>
+                <EditStudent />
+              </ProtectedRoute>
+            )}
+          />
 
-          <Navigate from="/" to={authToken ? '/students' : '/login'} />
-        </Switch>
+          <Route path="/" element={<Navigate to={authToken ? '/students' : '/login'} replace />} />
+          <Route path="*" element={<Navigate to={authToken ? '/students' : '/login'} replace />} />
+        </Routes>
       </div>
     </Router>
   );
