@@ -25,7 +25,7 @@ function EditStudent({ match, history }) {
     e.preventDefault();
 
     try {
-      await axios.put(`http://localhost:5000/students/${match.params.id}`, { name, age, course });
+      await axios.put(`https://student-management-tnxl.onrender.com/students/${match.params.id}`, { name, age, course });
       history.push('/students');
     } catch (error) {
       console.error('There was an error updating the student!', error);

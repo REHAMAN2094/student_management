@@ -13,7 +13,7 @@ function App() {
 
   const fetchStudents = async (page = 1) => {
     try {
-      const response = await axios.get(`http://localhost:5000/students?page=${page}&limit=5`, {
+      const response = await axios.get(`https://student-management-tnxl.onrender.com/students/?page=${page}&limit=5`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setStudents(response.data.students);
