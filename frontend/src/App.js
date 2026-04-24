@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
@@ -33,7 +33,7 @@ function App() {
     <Route
       {...rest}
       render={(props) =>
-        authToken ? <Component {...props} /> : <Redirect to="/login" />
+        authToken ? <Component {...props} /> : <Navigate to="/login" />
       }
     />
   );
@@ -72,7 +72,7 @@ function App() {
 
           <ProtectedRoute path="/edit/:id" component={EditStudent} />
 
-          <Redirect from="/" to={authToken ? '/students' : '/login'} />
+          <Navigate from="/" to={authToken ? '/students' : '/login'} />
         </Switch>
       </div>
     </Router>
