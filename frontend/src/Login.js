@@ -9,7 +9,7 @@ function Login({ setAuthToken }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/auth/login', { username, password });
+      const response = await axios.post('https://student-management-tnxl.onrender.com/auth/login', { username, password });
       localStorage.setItem('token', response.data.token); // Save token in local storage
       setAuthToken(response.data.token);  // Update the parent component's state
     } catch (err) {

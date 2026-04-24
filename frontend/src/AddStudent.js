@@ -9,7 +9,7 @@ function AddStudent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/students', { name, age, course });
+      await axios.post('https://student-management-tnxl.onrender.com/students', { name, age, course });
       alert('Student added!');
     } catch (error) {
       console.error('There was an error adding the student!', error);
